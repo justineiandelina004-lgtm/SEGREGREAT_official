@@ -1,0 +1,340 @@
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>SegreQuest: Trash Hero</title>  
+<link rel="stylesheet" href="style.css">  <style>  
+  
+body{  
+background:  
+linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),  
+url("https://images.unsplash.com/photo-1611284446314-60a58ac0deb9");  
+background-size:cover;  
+background-position:center;  
+color:white;  
+font-family:Arial;  
+}  
+  
+#game-header{  
+display:flex;  
+justify-content:space-around;  
+background:#00c853;  
+color:black;  
+padding:15px;  
+font-weight:bold;  
+font-size:18px;  
+}  
+  
+#game-container{  
+display:flex;  
+justify-content:center;  
+align-items:flex-start;  
+gap:120px;  
+margin-top:40px;  
+max-width:1000px;  
+margin-left:auto;  
+margin-right:auto;  
+}  
+  
+.bins{  
+display:flex;  
+flex-direction:column;  
+gap:20px;  
+width:250px;  
+}  
+  
+.bin{  
+background:#2ecc71;  
+padding:20px;  
+border-radius:10px;  
+font-weight:bold;  
+text-align:center;  
+cursor:pointer;  
+}  
+  
+.bin:hover{  
+background:#27ae60;  
+}  
+  
+.items{  
+display:flex;  
+flex-direction:column;  
+gap:15px;  
+width:300px;  
+}  
+  
+.item{  
+background:#3498db;  
+padding:15px;  
+border-radius:8px;  
+cursor:pointer;  
+font-weight:bold;  
+text-align:center;  
+}  
+  
+.item.selected{  
+outline:3px solid yellow;  
+}  
+  
+#message{  
+text-align:center;  
+margin-top:20px;  
+font-size:20px;  
+color:#7CFFB2;  
+}  
+  
+#reset-btn{  
+display:block;  
+margin:30px auto;  
+padding:10px 25px;  
+border:none;  
+background:#00e676;  
+font-weight:bold;  
+border-radius:10px;  
+cursor:pointer;  
+}  
+  
+</style>  </head>  <body>  <header>  
+<h1>SegreQuest: Trash Hero</h1>  
+</header>  <nav>  
+<a href="index.html">Home</a>  
+<a href="learn.html">Learn</a>  
+</nav>  <div id="game-header">  
+<div>Score: <span id="score">0</span></div>  
+<div id="timer">Time: 60</div>  
+<div id="level">Level: 1</div>  
+</div>  <div id="game-container">  <div class="bins" id="bins"></div>  <div class="items" id="items"></div>  </div>  <p id="message"></p>  <button id="reset-btn">Restart Game</button>
+
+<script>  
+  
+const levels = [  
+  
+{  
+time:60,  
+bins:["Biodegradable","Recyclable","Residual"],  
+items:[  
+  
+{name:"Banana Peel",type:"Biodegradable"},  
+{name:"Apple Core",type:"Biodegradable"},  
+{name:"Orange Peel",type:"Biodegradable"},  
+{name:"Leaves",type:"Biodegradable"},  
+{name:"Food Scraps",type:"Biodegradable"},  
+  
+{name:"Plastic Bottle",type:"Recyclable"},  
+{name:"Glass Bottle",type:"Recyclable"},  
+{name:"Aluminum Can",type:"Recyclable"},  
+{name:"Cardboard",type:"Recyclable"},  
+{name:"Newspaper",type:"Recyclable"},  
+  
+{name:"Candy Wrapper",type:"Residual"},  
+{name:"Used Tissue",type:"Residual"},  
+{name:"Plastic Bag",type:"Residual"},  
+{name:"Styrofoam Cup",type:"Residual"},  
+{name:"Broken Toy",type:"Residual"}  
+  
+]  
+},  
+  
+{  
+time:55,  
+bins:["Biodegradable","Recyclable","Residual"],  
+items:[  
+  
+{name:"Vegetable Peels",type:"Biodegradable"},  
+{name:"Eggshell",type:"Biodegradable"},  
+{name:"Fruit Scraps",type:"Biodegradable"},  
+{name:"Garden Waste",type:"Biodegradable"},  
+  
+{name:"Magazine",type:"Recyclable"},  
+{name:"Paper",type:"Recyclable"},  
+{name:"Tin Can",type:"Recyclable"},  
+{name:"Plastic Container",type:"Recyclable"},  
+  
+{name:"Chip Bag",type:"Residual"},  
+{name:"Dirty Plastic",type:"Residual"},  
+{name:"Old Sponge",type:"Residual"},  
+{name:"Rubber",type:"Residual"}  
+  
+]  
+},  
+  
+{  
+time:50,  
+bins:["Biodegradable","Recyclable","Residual"],  
+items:[  
+  
+{name:"Coffee Grounds",type:"Biodegradable"},  
+{name:"Tea Bags",type:"Biodegradable"},  
+{name:"Banana Stem",type:"Biodegradable"},  
+  
+{name:"Milk Carton",type:"Recyclable"},  
+{name:"Glass Jar",type:"Recyclable"},  
+{name:"Soda Can",type:"Recyclable"},  
+{name:"Paper Box",type:"Recyclable"},  
+  
+{name:"Styrofoam Plate",type:"Residual"},  
+{name:"Plastic Straw",type:"Residual"},  
+{name:"Broken Plastic",type:"Residual"},  
+{name:"Dirty Wrapper",type:"Residual"}  
+  
+]  
+}  
+  
+];  
+  
+let level=0;  
+let score=0;  
+let timer;  
+let timerInterval;  
+let selectedItem=null;  
+  
+const binsDiv=document.getElementById("bins");  
+const itemsDiv=document.getElementById("items");  
+  
+function loadLevel(){  
+  
+const data=levels[level];  
+  
+binsDiv.innerHTML="";  
+itemsDiv.innerHTML="";  
+  
+document.getElementById("level").innerText="Level: "+(level+1);  
+  
+data.bins.forEach(type=>{  
+  
+const bin=document.createElement("div");  
+bin.className="bin";  
+bin.innerText=type;  
+  
+bin.onclick=()=>checkAnswer(type);  
+  
+binsDiv.appendChild(bin);  
+  
+});  
+  
+data.items.forEach(item=>{  
+  
+const div=document.createElement("div");  
+  
+div.className="item";  
+div.innerText=item.name;  
+div.dataset.type=item.type;  
+  
+div.onclick=()=>{  
+  
+document.querySelectorAll(".item").forEach(i=>i.classList.remove("selected"));  
+  
+div.classList.add("selected");  
+selectedItem=div;  
+  
+};  
+  
+itemsDiv.appendChild(div);  
+  
+});  
+  
+startTimer(data.time);  
+  
+}  
+  
+function checkAnswer(binType){  
+  
+if(!selectedItem) return;  
+  
+if(selectedItem.dataset.type===binType){  
+  
+selectedItem.remove();  
+score+=10;  
+document.getElementById("message").innerText="✅ Correct";  
+  
+}else{  
+  
+score-=5;  
+document.getElementById("message").innerText="❌ Wrong bin";  
+  
+}  
+  
+document.getElementById("score").innerText=score;  
+  
+selectedItem=null;  
+  
+checkComplete();  
+  
+}  
+  
+function checkComplete(){  
+  
+if(document.querySelectorAll(".item").length===0){  
+  
+clearInterval(timerInterval);  
+  
+setTimeout(()=>{  
+  
+if(level<levels.length-1){  
+  
+level++;  
+loadLevel();  
+  
+}else{  
+  
+document.getElementById("message").innerText="🏆 Game Finished!";  
+  
+}  
+  
+},600);  
+  
+}  
+  
+}  
+  
+function startTimer(time){  
+  
+timer=time;  
+  
+document.getElementById("timer").innerText="Time: "+timer;  
+  
+clearInterval(timerInterval);  
+  
+timerInterval=setInterval(()=>{  
+  
+timer--;  
+  
+document.getElementById("timer").innerText="Time: "+timer;  
+  
+if(timer<=0){  
+  
+clearInterval(timerInterval);  
+  
+document.querySelectorAll(".item").forEach(i=>i.remove());  
+  
+setTimeout(()=>{  
+  
+if(level<levels.length-1){  
+  
+level++;  
+loadLevel();  
+  
+}  
+  
+},800);  
+  
+}  
+  
+},1000);  
+  
+}  
+  
+document.getElementById("reset-btn").onclick=()=>{  
+  
+score=0;  
+level=0;  
+  
+document.getElementById("score").innerText=0;  
+  
+loadLevel();  
+  
+};  
+  
+loadLevel();  
+  
+</script>  </body>  
+</html>

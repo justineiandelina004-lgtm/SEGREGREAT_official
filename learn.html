@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SegreGREAT | Learn</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+  line-height: 1.7;
+}
+
+header{
+  text-align:center;
+  padding:50px 20px;
+}
+
+header h1{
+  font-size:3em;
+  margin-bottom:10px;
+  color:#7CFFB2;
+}
+
+.start-btn{
+  display:inline-block;
+  margin-top:15px;
+  padding:12px 25px;
+  background:#00e676;
+  color:black;
+  font-weight:bold;
+  text-decoration:none;
+  border-radius:12px;
+  transition:0.3s;
+}
+.start-btn:hover{background:#00c853; color:white;}
+
+nav{
+  background:rgba(0,0,0,0.6);
+  padding:15px;
+  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+nav a{
+  color:white;
+  text-decoration:none;
+  margin:0 15px;
+  font-weight:bold;
+  transition:0.3s;
+}
+nav a:hover{color:#7CFFB2;}
+
+section{
+  max-width:1000px;
+  margin:40px auto;
+  background:rgba(0,0,0,0.55);
+  padding:40px;
+  border-radius:12px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h2{
+  color:#7CFFB2;
+  margin-bottom:20px;
+}
+
+h3{
+  margin-top:25px;
+  color:#A5FFD6;
+}
+
+ul{
+  margin-left:20px;
+  margin-top:10px;
+}
+li{
+  margin-bottom:8px;
+}
+
+.highlight{
+  margin-top:15px;
+  padding:15px;
+  background:rgba(0,255,118,0.1);
+  border-radius:8px;
+}
+
+.stats-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:30px;
+  margin-top:30px;
+}
+
+.stat-card{
+  background:rgba(255,255,255,0.1);
+  padding:30px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.stat-card h3{
+  color:#00e676;
+  font-size:36px;
+  margin-bottom:10px;
+}
+
+.waste-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+
+.waste-btn{
+  padding:15px;
+  background:#00e676;
+  color:black;
+  border:none;
+  font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.waste-btn:hover{
+  background:#00c853;
+  color:white;
+}
+
+#reset-btn{
+  display:block;
+  margin:30px auto;
+  padding:10px 25px;
+  border:none;
+  background:#00e676;
+  font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+#waste-info{
+  margin-top:20px;
+  background:rgba(0,255,118,0.1);
+  padding:15px;
+  border-radius:8px;
+}
+
+.info-section{
+  margin-top:20px;
+  padding:15px;
+  background:rgba(0,255,118,0.08);
+  border-radius:8px;
+}
+.info-section h4{
+  color:#A5FFD6;
+  margin-bottom:10px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>SegreGREAT Learn</h1>
+<a href="index.html" class="start-btn">Back Home</a>
+</header>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="game.html">Play Game</a>
+</nav>
+
+<section class="section">
+<h2>Global Waste Statistics</h2>
+<div class="stats-grid">
+  <div class="stat-card"><h3>2,000,000,000</h3><p>Tons of waste produced yearly worldwide</p></div>
+  <div class="stat-card"><h3>60%</h3><p>Recyclable waste percentage</p></div>
+  <div class="stat-card"><h3>33%</h3><p>Improperly managed waste</p></div>
+  <div class="stat-card"><h3>1,000,000</h3><p>Marine animals affected by plastic</p></div>
+</div>
+</section>
+
+<section class="section">
+<h2>Click a Waste Type to Learn More</h2>
+<div class="waste-grid">
+  <button class="waste-btn" onclick="showInfo('Biodegradable')">Biodegradable</button>
+  <button class="waste-btn" onclick="showInfo('Recyclable')">Recyclable</button>
+  <button class="waste-btn" onclick="showInfo('Residual')">Residual</button>
+  <button class="waste-btn" onclick="showInfo('Hazardous')">Hazardous</button>
+  <button class="waste-btn" onclick="showInfo('Plastic')">Plastic</button>
+  <button class="waste-btn" onclick="showInfo('Glass')">Glass</button>
+  <button class="waste-btn" onclick="showInfo('Metal')">Metal</button>
+  <button class="waste-btn" onclick="showInfo('E-Waste')">E-Waste</button>
+</div>
+<div id="waste-info" class="highlight">
+Click a waste type above to see its details.
+</div>
+</section>
+
+<script>
+const wasteDetails = {
+  "Biodegradable":{
+    description:"Food scraps, garden waste, paper towels. Decomposes naturally into compost.",
+    tips:"Separate organic waste and consider home composting. Reduces landfill and enriches soil.",
+    impact:"Reduces methane emissions from landfills and returns nutrients to the soil.",
+    funFact:"Banana peels can be used as natural fertilizer for plants."
+  },
+  "Recyclable":{
+    description:"Plastics, glass, metals, paper. Can be reused to reduce landfill load.",
+    tips:"Rinse before recycling. Avoid mixing with food waste to prevent contamination.",
+    impact:"Helps conserve resources and reduces energy needed for new material production.",
+    funFact:"Aluminum cans can be recycled indefinitely without losing quality."
+  },
+  "Residual":{
+    description:"Non-recyclable items that cannot be safely composted or recycled.",
+    tips:"Minimize use of single-use items. Dispose properly in general waste bins.",
+    impact:"Improper disposal increases landfill volume and pollution.",
+    funFact:"Residual waste includes things like broken toys and soiled packaging."
+  },
+  "Hazardous":{
+    description:"Batteries, chemicals, medical waste. Requires special handling.",
+    tips:"Use designated collection points. Never pour chemicals down the drain.",
+    impact:"Protects humans and wildlife from toxic exposure.",
+    funFact:"Some batteries can explode if not disposed safely!"
+  },
+  "Plastic":{
+    description:"Bottles, bags, packaging. Major contributor to ocean pollution.",
+    tips:"Reduce, reuse, recycle. Consider alternatives like cloth bags.",
+    impact:"Plastics can take hundreds of years to decompose and harm marine life.",
+    funFact:"Only 9% of plastic waste ever produced has been recycled globally."
+  },
+  "Glass":{
+    description:"Bottles and jars. Can be recycled repeatedly, handle carefully.",
+    tips:"Rinse and separate by color when possible. Reuse jars creatively.",
+    impact:"Recycling glass saves raw materials and energy.",
+    funFact:"Glass is 100% recyclable and can be recycled endlessly."
+  },
+  "Metal":{
+    description:"Aluminum cans, scrap metal. Valuable for recycling.",
+    tips:"Separate metals by type. Scrap metal can be reused in manufacturing.",
+    impact:"Recycling metals conserves resources and reduces mining impacts.",
+    funFact:"Recycling one aluminum can saves enough energy to run a TV for 3 hours."
+  },
+  "E-Waste":{
+    description:"Old electronics, batteries, chargers. Contains harmful materials.",
+    tips:"Take to e-waste recycling centers. Never dispose in normal trash.",
+    impact:"Prevents toxic substances from contaminating soil and water.",
+    funFact:"Over 50 million tons of e-waste are produced worldwide each year."
+  }
+};
+
+function showInfo(type){
+  const info = wasteDetails[type];
+  document.getElementById("waste-info").innerHTML = `
+    <h3>${type} Waste</h3>
+    <div class="info-section"><h4>Description:</h4><p>${info.description}</p></div>
+    <div class="info-section"><h4>Tips:</h4><p>${info.tips}</p></div>
+    <div class="info-section"><h4>Environmental Impact:</h4><p>${info.impact}</p></div>
+    <div class="info-section"><h4>Fun Fact:</h4><p>${info.funFact}</p></div>
+  `;
+}
+</script>
+
+</body>
+</html>
